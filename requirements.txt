@@ -14,3 +14,5 @@ redis
 weaviate-client
 deepsearch-toolkit
 neo4j
+
+
