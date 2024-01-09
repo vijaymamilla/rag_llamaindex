@@ -1,0 +1,16 @@
+python-dotenv
+tiktoken 
+streamlit 
+openai 
+pydantic 
+pydantic-settings 
+cohere 
+google-generativeai
+chromadb
+llama-index
+pymupdf
+pypdf
+redis
+weaviate-client
+deepsearch-toolkit
+neo4j

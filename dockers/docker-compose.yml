@@ -1,0 +1,63 @@
+version: '3.9'
+
+services:
+  weaviate:
+    image: ${COMPOSE_PROJECT_NAME}/weaviate:1.23.0
+    build:
+      context: ./weaviate
+      dockerfile: Dockerfile
+    ports:
+      - 8081:8080
+    volumes:
+      - ./_volume/weaviate/:/var/lib/weaviate/
+    networks:
+      - core-net
+    restart: on-failure
+    environment:
+      - QUERY_DEFAULTS_LIMIT=25
+      - AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED=true
+      - PERSISTENCE_DATA_PATH='/var/lib/weaviate'
+      - ENABLE_MODULES=''
+      - CLUSTER_HOSTNAME='weaviate-1'
+  
+  redis:
+    image: ${COMPOSE_PROJECT_NAME}/redis:7.2.0-v6
+    build:
+      context: ./redis
+      dockerfile: Dockerfile
+    ports:
+      - 8091:6379
+    volumes:
+      - ./_volume/redis/data:/data
+      - ./_volume/redis/conf/redis.conf:/conf/redis.conf
+    networks:
+      - core-net
+    restart: on-failure
+  
+  neo4j:
+    image: ${COMPOSE_PROJECT_NAME}/neo4j:5.15.0
+    build:
+      context: ./neo4j
+      dockerfile: Dockerfile
+    ports:
+    - 8071:7687
+    - 8072:7474
+    volumes:
+      - ./_volume/neo4j/data:/data
+      - ./_volume/neo4j/plugins:/plugins
+      - ./_volume/neo4j/conf:/conf
+    networks:
+      - core-net
+    restart: on-failure
+    environment:
+      - NEO4J_AUTH=${NEO4J_USERNAME}/${NEO4J_PASSWORD}
+      - NEO4J_PLUGINS=["apoc"]
+      - NEO4J_initial_dbms_default__database=${PROJECT_NAME}GraphStore
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+      - NEO4J_dbms_security_procedures_allowlist=apoc.*
+      - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_apoc_export_file_enabled=true
+      - NEO4J_apoc_import_file_use__neo4j__config=true
+
+networks:
+  core-net:
