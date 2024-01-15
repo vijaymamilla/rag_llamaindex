@@ -1,5 +1,5 @@
 # rag_llamaindex
-Rag implementation using LlamaIndex and Weaviate 
+Retrieval-augmented generation(RAG) implementation using LlamaIndex and Weaviate 
 
 1. Create a python project
 
